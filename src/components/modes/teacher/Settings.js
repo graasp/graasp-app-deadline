@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
+import DatePicker from 'react-datepicker';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
 import Switch from '@material-ui/core/Switch';
 import { connect } from 'react-redux';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withTranslation } from 'react-i18next';
+import TextField from '@material-ui/core/TextField';
 import { closeSettings, patchAppInstance } from '../../../actions';
 import Loader from '../../common/Loader';
+import 'react-datepicker/dist/react-datepicker.css';
 
 function getModalStyle() {
   const top = 50;
@@ -32,6 +35,9 @@ const styles = theme => ({
   button: {
     margin: theme.spacing(),
   },
+  textField: {
+    marginTop: theme.spacing(3),
+  },
 });
 
 class Settings extends Component {
@@ -43,7 +49,7 @@ class Settings extends Component {
     activity: PropTypes.bool.isRequired,
     settings: PropTypes.shape({
       headerVisible: PropTypes.bool.isRequired,
-      studentsOnly: PropTypes.bool.isRequired,
+      deadlineMessage: PropTypes.string.isRequired,
     }).isRequired,
     t: PropTypes.func.isRequired,
     dispatchCloseSettings: PropTypes.func.isRequired,
@@ -51,6 +57,10 @@ class Settings extends Component {
     i18n: PropTypes.shape({
       defaultNS: PropTypes.string,
     }).isRequired,
+  };
+
+  state = {
+    selectedDate: new Date(),
   };
 
   saveSettings = settingsToChange => {
@@ -62,6 +72,15 @@ class Settings extends Component {
     dispatchPatchAppInstance({
       data: newSettings,
     });
+  };
+
+  handleDeadlineChanged = value => {
+    this.setState({ selectedDate: value });
+    this.saveSettings({ initialDateTime: new Date(value).toISOString() });
+  };
+
+  handleDeadlineMessageChanged = ({ target: { value: deadlineMessage } }) => {
+    this.saveSettings({ deadlineMessage });
   };
 
   handleChangeHeaderVisibility = () => {
@@ -96,11 +115,40 @@ class Settings extends Component {
       />
     );
 
+    const {
+      settings: { deadlineMessage },
+    } = this.props;
+    const { selectedDate } = this.state;
+
     return (
-      <FormControlLabel
-        control={switchControl}
-        label={t('Show Header to Students')}
-      />
+      <>
+        <FormControlLabel
+          control={switchControl}
+          label={t('Show Header to Students')}
+        />
+        <DatePicker
+          selected={selectedDate}
+          inline
+          fixedHeight
+          minDate={new Date()}
+          showTimeSelect
+          timeFormat="HH:mm"
+          dateFormat="MMMM d, yyyy h:mm aa"
+          id="completionDeadline"
+          label="Select Due Date "
+          onChange={this.handleDeadlineChanged}
+        />
+        <TextField
+          id="timeoutMessage"
+          label="Timeout message"
+          placeholder="Show message when timer runs out"
+          multiline
+          variant="outlined"
+          fullWidth="true"
+          onBlur={this.handleDeadlineMessageChanged}
+          defaultValue={deadlineMessage}
+        />
+      </>
     );
   }
 
