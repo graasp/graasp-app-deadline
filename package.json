@@ -1,12 +1,11 @@
 {
-  "name": "graasp-app-starter-react",
-  "version": "0.5.4",
+  "name": "graasp-app-deadline",
+  "version": "0.1.0",
   "private": true,
-  "author": "React EPFL",
+  "author": "EPFL",
   "contributors": [
-    "Juan Carlos Farah",
-    "Hassan Abdul Ghaffar",
-    "Mashkour Abdel Aziz"
+    "Sola Olateju",
+    "Juan Carlos Farah"
   ],
   "homepage": ".",
   "license": "MIT",
