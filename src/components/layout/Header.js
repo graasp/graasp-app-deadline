@@ -79,7 +79,7 @@ class Header extends Component {
           <Toolbar>
             <Logo className={classes.logo} />
             <Typography variant="h6" color="inherit" className={classes.grow}>
-              {t('Graasp App Starter')}
+              {t('Deadline')}
             </Typography>
             {this.renderSpaceLink()}
             {this.renderAppInstanceLink()}
