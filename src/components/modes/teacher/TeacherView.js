@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { withStyles } from '@material-ui/core/styles';
@@ -5,6 +6,14 @@ import Fab from '@material-ui/core/Fab';
 import SettingsIcon from '@material-ui/icons/Settings';
 import { withTranslation } from 'react-i18next';
 import PropTypes from 'prop-types';
+import Paper from '@material-ui/core/Paper';
+import { Grid, IconButton } from '@material-ui/core';
+import Table from '@material-ui/core/Table';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+import { Delete as DeleteIcon } from '@material-ui/icons';
+import TableCell from '@material-ui/core/TableCell';
+import TableBody from '@material-ui/core/TableBody';
 import './TeacherView.css';
 import {
   patchAppInstanceResource,
@@ -13,6 +22,7 @@ import {
   openSettings,
 } from '../../../actions';
 import { getUsers } from '../../../actions/users';
+import ConfirmDialog from '../../common/ConfirmDialog';
 import Settings from './Settings';
 
 export class TeacherView extends Component {
@@ -28,24 +38,6 @@ export class TeacherView extends Component {
       fab: PropTypes.string,
     }).isRequired,
     dispatchGetUsers: PropTypes.func.isRequired,
-    // inside the shape method you should put the shape
-    // that the resources your app uses will have
-
-    // appInstanceResources: PropTypes.arrayOf(
-    //   PropTypes.shape({
-    //     // we need to specify number to avoid warnings with local server
-    //     _id: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-    //     appInstanceId: PropTypes.string,
-    //     data: PropTypes.object,
-    //   }),
-    // ),
-    // this is the shape of the select options for students
-    // studentOptions: PropTypes.arrayOf(
-    //   PropTypes.shape({
-    //     label: PropTypes.string,
-    //     value: PropTypes.string,
-    //   }),
-    // ).isRequired,
   };
 
   // static defaultProps = {
@@ -70,11 +62,21 @@ export class TeacherView extends Component {
     },
   });
 
+  state = {
+    confirmDialogOpen: false,
+  };
+
   constructor(props) {
     super(props);
     const { dispatchGetUsers } = this.props;
     dispatchGetUsers();
   }
+
+  handleToggleConfirmDialog = open => () => {
+    this.setState({
+      confirmDialogOpen: open,
+    });
+  };
 
   render() {
     // extract properties from the props object
@@ -86,63 +88,53 @@ export class TeacherView extends Component {
       // these properties are injected by the redux mapStateToProps method
       dispatchOpenSettings,
     } = this.props;
+    const { confirmDialogOpen } = this.state;
+
     return (
       <>
-        {/* <Grid container spacing={0}>
+        <Grid container spacing={0}>
           <Grid item xs={12} className={classes.main}>
-            <Paper className={classes.message}>
-              {t(
-                'This is the teacher view. Switch to the student view by clicking on the URL below.',
-              )}
-              <a href={addQueryParamsToUrl({ mode: 'student' })}>
-                <pre>
-                  {`${window.location.host}/${addQueryParamsToUrl({
-                    mode: 'student',
-                  })}`}
-                </pre>
-              </a>
-            </Paper>
-            <Typography variant="h5" color="inherit">
-              {t('View the Students in the Sample Space')}
-            </Typography>
-            <Select
-              className="StudentSelect"
-              value={selectedStudent}
-              options={studentOptions}
-              onChange={this.handleChangeStudent}
-              isClearable
-            />
-            <hr />
-            <Typography variant="h6" color="inherit">
-              {t(
-                'This table illustrates how an app can save resources on the server.',
-              )}
-            </Typography>
             <Paper className={classes.root}>
-              <Table className={classes.table}>
-                <TableHead>
-                  <TableRow>
-                    <TableCell>ID</TableCell>
-                    <TableCell>App Instance</TableCell>
-                    <TableCell>Value</TableCell>
-                    <TableCell>Actions</TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {renderAppInstanceResources(appInstanceResources, this.props)}
-                </TableBody>
-              </Table>
+              <Paper className={classes.root}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>{t('Due Date')}</TableCell>
+                      <TableCell>{t('Timeout Message')}</TableCell>
+                      <TableCell align="center">{t('Actions')}</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    <TableRow key>
+                      <TableCell align="left" />
+                      <TableCell align="left" />
+                      <TableCell align="center">
+                        <IconButton
+                          color="primary"
+                          onClick={this.handleToggleConfirmDialog(true)}
+                          disabled={_.isEmpty()}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                        <ConfirmDialog
+                          open={confirmDialogOpen}
+                          title={t('Delete Time')}
+                          text={t(
+                            "By clicking 'Delete', you will be deleting student's time. This action cannot be undone.",
+                          )}
+                          handleClose={this.handleToggleConfirmDialog(false)}
+                          handleConfirm={() => this.handleConfirmDelete()}
+                          confirmText={t('Delete')}
+                          cancelText={t('Cancel')}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  </TableBody>
+                </Table>
+              </Paper>
             </Paper>
-            <Button
-              color="primary"
-              className={classes.button}
-              variant="contained"
-              onClick={() => generateRandomAppInstanceResource(this.props)}
-            >
-              {t('Save a Random App Instance Resource via the API')}
-            </Button>
           </Grid>
-        </Grid> */}
+        </Grid>
         <Settings />
         <Fab
           color="primary"

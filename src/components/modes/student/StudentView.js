@@ -67,12 +67,6 @@ export const StudentView = ({ t, deadlineMessage, initialDateTime }) => {
                       timeUnit={t('Minutes')}
                     />
                   </Grid>
-                  <Grid item xs>
-                    <Counter
-                      timeValue={<Timer.Seconds />}
-                      timeUnit={t('Seconds')}
-                    />
-                  </Grid>
                 </Grid>
                 <Grid variant="outlined" item xs align="center">
                   <Typography variant="subtitle2">
