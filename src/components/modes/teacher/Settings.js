@@ -9,6 +9,7 @@ import { connect } from 'react-redux';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { withTranslation } from 'react-i18next';
 import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
 import { closeSettings, patchAppInstance } from '../../../actions';
 import Loader from '../../common/Loader';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -121,34 +122,39 @@ class Settings extends Component {
     const { selectedDate } = this.state;
 
     return (
-      <>
-        <FormControlLabel
-          control={switchControl}
-          label={t('Show Header to Students')}
-        />
-        <DatePicker
-          selected={selectedDate}
-          inline
-          fixedHeight
-          minDate={new Date()}
-          showTimeSelect
-          timeFormat="HH:mm"
-          dateFormat="MMMM d, yyyy h:mm aa"
-          id="completionDeadline"
-          label="Select Due Date "
-          onChange={this.handleDeadlineChanged}
-        />
-        <TextField
-          id="timeoutMessage"
-          label="Timeout message"
-          placeholder="Show message when timer runs out"
-          multiline
-          variant="outlined"
-          fullWidth="true"
-          onBlur={this.handleDeadlineMessageChanged}
-          defaultValue={deadlineMessage}
-        />
-      </>
+      <Grid container spacing={3}>
+        <Grid item>
+          <FormControlLabel
+            control={switchControl}
+            label={t('Show Header to Students')}
+          />
+        </Grid>
+        <Grid item>
+          <DatePicker
+            selected={selectedDate}
+            inline
+            fixedHeight
+            minDate={new Date()}
+            showTimeSelect
+            timeFormat="HH:mm"
+            dateFormat="MMMM d, yyyy h:mm aa"
+            id="completionDeadline"
+            label="Select Due Date "
+            onChange={this.handleDeadlineChanged}
+          />
+        </Grid>
+        <Grid item>
+          <TextField
+            id="timeoutMessage"
+            label="Timeout message"
+            placeholder="Show message when timer runs out"
+            variant="outlined"
+            fullWidth
+            onBlur={this.handleDeadlineMessageChanged}
+            defaultValue={deadlineMessage}
+          />
+        </Grid>
+      </Grid>
     );
   }
 
