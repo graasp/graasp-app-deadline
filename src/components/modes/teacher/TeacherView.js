@@ -15,13 +15,7 @@ import { Delete as DeleteIcon } from '@material-ui/icons';
 import TableCell from '@material-ui/core/TableCell';
 import TableBody from '@material-ui/core/TableBody';
 import './TeacherView.css';
-import {
-  patchAppInstanceResource,
-  postAppInstanceResource,
-  deleteAppInstanceResource,
-  openSettings,
-} from '../../../actions';
-import { getUsers } from '../../../actions/users';
+import { patchAppInstance, openSettings } from '../../../actions';
 import ConfirmDialog from '../../common/ConfirmDialog';
 import Settings from './Settings';
 
@@ -29,6 +23,8 @@ export class TeacherView extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     dispatchOpenSettings: PropTypes.func.isRequired,
+    initialDateTime: PropTypes.number.isRequired,
+    deadlineMessage: PropTypes.string.isRequired,
     classes: PropTypes.shape({
       root: PropTypes.string,
       table: PropTypes.string,
@@ -37,12 +33,8 @@ export class TeacherView extends Component {
       message: PropTypes.string,
       fab: PropTypes.string,
     }).isRequired,
-    dispatchGetUsers: PropTypes.func.isRequired,
+    dispatchPatchAppInstance: PropTypes.func.isRequired,
   };
-
-  // static defaultProps = {
-  //   appInstanceResources: [],
-  // };
 
   static styles = theme => ({
     root: {
@@ -66,16 +58,19 @@ export class TeacherView extends Component {
     confirmDialogOpen: false,
   };
 
-  constructor(props) {
-    super(props);
-    const { dispatchGetUsers } = this.props;
-    dispatchGetUsers();
-  }
-
-  handleToggleConfirmDialog = open => () => {
+  handleToggleConfirmDialog = () => {
+    const { confirmDialogOpen } = this.state;
     this.setState({
-      confirmDialogOpen: open,
+      confirmDialogOpen: !confirmDialogOpen,
     });
+  };
+
+  handleConfirmDelete = () => {
+    const { dispatchPatchAppInstance } = this.props;
+    dispatchPatchAppInstance({
+      data: {},
+    });
+    this.handleToggleConfirmDialog();
   };
 
   render() {
@@ -87,8 +82,12 @@ export class TeacherView extends Component {
       t,
       // these properties are injected by the redux mapStateToProps method
       dispatchOpenSettings,
+      initialDateTime,
+      deadlineMessage,
     } = this.props;
     const { confirmDialogOpen } = this.state;
+    const dateTime =
+      initialDateTime && new Date(initialDateTime).toLocaleString();
 
     return (
       <>
@@ -106,13 +105,15 @@ export class TeacherView extends Component {
                   </TableHead>
                   <TableBody>
                     <TableRow key>
-                      <TableCell align="left" />
-                      <TableCell align="left" />
+                      <TableCell align="left">{dateTime}</TableCell>
+                      <TableCell align="left">
+                        {!initialDateTime ? '' : deadlineMessage}
+                      </TableCell>
                       <TableCell align="center">
                         <IconButton
                           color="primary"
-                          onClick={this.handleToggleConfirmDialog(true)}
-                          disabled={_.isEmpty()}
+                          onClick={this.handleToggleConfirmDialog}
+                          disabled={_.isEmpty(initialDateTime)}
                         >
                           <DeleteIcon />
                         </IconButton>
@@ -122,8 +123,8 @@ export class TeacherView extends Component {
                           text={t(
                             "By clicking 'Delete', you will be deleting student's time. This action cannot be undone.",
                           )}
-                          handleClose={this.handleToggleConfirmDialog(false)}
-                          handleConfirm={() => this.handleConfirmDelete()}
+                          handleClose={this.handleToggleConfirmDialog}
+                          handleConfirm={this.handleConfirmDelete}
                           confirmText={t('Delete')}
                           cancelText={t('Cancel')}
                         />
@@ -150,23 +151,20 @@ export class TeacherView extends Component {
 }
 
 // get the app instance resources that are saved in the redux store
-const mapStateToProps = ({ users, appInstanceResources }) => ({
+const mapStateToProps = ({ appInstance }) => ({
   // we transform the list of students in the database
   // to the shape needed by the select component
-  studentOptions: users.content.map(({ id, name }) => ({
-    value: id,
-    label: name,
-  })),
-  appInstanceResources: appInstanceResources.content,
+  appInstance,
+  initialDateTime: appInstance.content.settings.initialDateTime,
+  deadlineMessage: appInstance.content.settings.deadlineMessage,
 });
 
 // allow this component to dispatch a post
 // request to create an app instance resource
 const mapDispatchToProps = {
-  dispatchGetUsers: getUsers,
-  dispatchPostAppInstanceResource: postAppInstanceResource,
-  dispatchPatchAppInstanceResource: patchAppInstanceResource,
-  dispatchDeleteAppInstanceResource: deleteAppInstanceResource,
+  // dispatchPostAppInstance: postAppInstance,
+  dispatchPatchAppInstance: patchAppInstance,
+  // dispatchDeleteAppInstance: deleteAppInstance,
   dispatchOpenSettings: openSettings,
 };
 

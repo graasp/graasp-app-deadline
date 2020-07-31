@@ -26,7 +26,7 @@ const DateView = ({ dateTime }) => {
             <Typography variant="h5">{` ${time} ${timeZone}`}</Typography>
           </Grid>
           <Grid xs>
-            <Typography variant="h1" color="primary">
+            <Typography variant="h2" color="primary">
               {`${weekDay}, ${month}  ${day}`}
             </Typography>
           </Grid>

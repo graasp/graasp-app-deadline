@@ -30,7 +30,7 @@ export const StudentView = ({ t, deadlineMessage, initialDateTime }) => {
   let dateTimeInMille = new Date(dateTimeLocal) - new Date();
   const isElapsed = dateTimeInMille < 0;
   const pendingDeadlineConfigMsg =
-    'You do not have a deadline to complete this activity.';
+    'You do not have a completion deadline this lesson.';
   dateTimeInMille = !isElapsed ? dateTimeInMille : 0;
 
   return (

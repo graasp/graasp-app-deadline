@@ -130,6 +130,17 @@ class Settings extends Component {
           />
         </Grid>
         <Grid item>
+          <TextField
+            id="timeoutMessage"
+            label="Timeout message"
+            placeholder="Show message when timer runs out"
+            variant="outlined"
+            fullWidth
+            onBlur={this.handleDeadlineMessageChanged}
+            defaultValue={deadlineMessage}
+          />
+        </Grid>
+        <Grid item>
           <DatePicker
             selected={selectedDate}
             inline
@@ -141,17 +152,6 @@ class Settings extends Component {
             id="completionDeadline"
             label="Select Due Date "
             onChange={this.handleDeadlineChanged}
-          />
-        </Grid>
-        <Grid item>
-          <TextField
-            id="timeoutMessage"
-            label="Timeout message"
-            placeholder="Show message when timer runs out"
-            variant="outlined"
-            fullWidth
-            onBlur={this.handleDeadlineMessageChanged}
-            defaultValue={deadlineMessage}
           />
         </Grid>
       </Grid>

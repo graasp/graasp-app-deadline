@@ -11,6 +11,7 @@ import { showErrorToast } from '../utils/toasts';
 
 const DEFAULT_SETTINGS = {
   headerVisible: false,
+  deadlineMessage: 'Time is up! ',
 };
 
 const INITIAL_STATE = {
