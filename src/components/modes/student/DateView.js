@@ -15,7 +15,6 @@ const useStyles = makeStyles(() => ({
 const DateView = ({ dateTime }) => {
   const classes = useStyles();
   const [weekDay, month, day, , time, timeZone] = dateTime.split(' ');
-  // console.log(weekDay,"/", month, "/", day, "/", year,"/", time, "/", timeZone);
 
   return (
     <Grid container className={classes.gridRow} spacing={1}>

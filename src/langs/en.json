@@ -1,9 +1,20 @@
 {
   "translations": {
-    "This is the student view. Switch to the teacher view by clicking on the URL below.": "This is the student view. Switch to the teacher view by clicking on the URL below.",
-    "This is the teacher view. Switch to the student view by clicking on the URL below.": "This is the teacher view. Switch to the student view by clicking on the URL below.",
-    "Welcome to the Graasp App Starter Kit": "Welcome to the Graasp App Starter Kit",
-    "Wed": "Wednesday",
-    "Jun": "June"
+    "change time": "change time",
+    "change date": "change date",
+    "Time": "Time",
+    "Time is up!": "Time is up!",
+    "Date": "Date",
+    "Show message when timer runs out": "Show message when timer runs out",
+    "Timeout Message": "Timeout Message",
+    "Settings": "Settings",
+    "Delete": "Delete",
+    "Cancel": "Cancel",
+    "Show Header to Students": "Show Header to Students",
+    "By clicking 'Delete', you will be deleting student's time. This action cannot be undone.": "By clicking 'Delete', you will be deleting student's time. This action cannot be undone.",
+    "Delete Time":"Delete Time",
+    "Actions": "Actions",
+    "Due Date": "Due Date",
+    "Deadline": "Deadline"
   }
 }

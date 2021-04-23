@@ -23,7 +23,7 @@ export class TeacherView extends Component {
   static propTypes = {
     t: PropTypes.func.isRequired,
     dispatchOpenSettings: PropTypes.func.isRequired,
-    initialDateTime: PropTypes.number.isRequired,
+    initialDateTime: PropTypes.string.isRequired,
     deadlineMessage: PropTypes.string.isRequired,
     classes: PropTypes.shape({
       root: PropTypes.string,
@@ -104,7 +104,7 @@ export class TeacherView extends Component {
                     </TableRow>
                   </TableHead>
                   <TableBody>
-                    <TableRow key>
+                    <TableRow>
                       <TableCell align="left">{dateTime}</TableCell>
                       <TableCell align="left">
                         {!initialDateTime ? '' : deadlineMessage}
@@ -162,9 +162,7 @@ const mapStateToProps = ({ appInstance }) => ({
 // allow this component to dispatch a post
 // request to create an app instance resource
 const mapDispatchToProps = {
-  // dispatchPostAppInstance: postAppInstance,
   dispatchPatchAppInstance: patchAppInstance,
-  // dispatchDeleteAppInstance: deleteAppInstance,
   dispatchOpenSettings: openSettings,
 };
 
