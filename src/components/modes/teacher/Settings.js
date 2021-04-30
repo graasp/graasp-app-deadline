@@ -76,15 +76,17 @@ class Settings extends Component {
   };
 
   componentDidMount() {
-    const { lang } = this.props;
-    // import corresponding moment locale depending on language
-    // eslint-disable-next-line no-unused-expressions
-    import(`moment/locale/${lang}`);
+    this.updateLanguage();
   }
 
-  componentDidUpdate({ settings: prevSettings }) {
-    const { settings, activity } = this.props;
+  componentDidUpdate({ settings: prevSettings, lang: prevLang }) {
+    const { settings, activity, lang } = this.props;
     const { selectedDate } = this.state;
+
+    if (lang !== prevLang) {
+      this.updateLanguage();
+    }
+
     if (!activity && settings?.initialDateTime) {
       // update selected date with new fetched value
       if (
@@ -96,6 +98,13 @@ class Settings extends Component {
       }
     }
   }
+
+  updateLanguage = () => {
+    const { lang } = this.props;
+    // import corresponding moment locale depending on language
+    // eslint-disable-next-line no-unused-expressions
+    import(`moment/locale/${lang}`);
+  };
 
   saveSettings = settingsToChange => {
     const { settings, dispatchPatchAppInstance } = this.props;
