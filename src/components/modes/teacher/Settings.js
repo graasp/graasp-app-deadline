@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
-import DatePicker from 'react-datepicker';
+import {
+  MuiPickersUtilsProvider,
+  KeyboardTimePicker,
+  KeyboardDatePicker,
+} from '@material-ui/pickers';
+import moment from 'moment';
 import Typography from '@material-ui/core/Typography';
 import Modal from '@material-ui/core/Modal';
+import MomentUtils from '@date-io/moment';
 import Switch from '@material-ui/core/Switch';
 import { connect } from 'react-redux';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -11,8 +17,11 @@ import { withTranslation } from 'react-i18next';
 import TextField from '@material-ui/core/TextField';
 import Grid from '@material-ui/core/Grid';
 import { closeSettings, patchAppInstance } from '../../../actions';
-import Loader from '../../common/Loader';
-import 'react-datepicker/dist/react-datepicker.css';
+import {
+  DEFAULT_DATE_FORMAT,
+  DEFAULT_DEADLINE_MESSAGE,
+} from '../../../constants/constants';
+import { DEFAULT_LANG } from '../../../config/settings';
 
 function getModalStyle() {
   const top = 50;
@@ -51,6 +60,7 @@ class Settings extends Component {
     settings: PropTypes.shape({
       headerVisible: PropTypes.bool.isRequired,
       deadlineMessage: PropTypes.string.isRequired,
+      initialDateTime: PropTypes.string,
     }).isRequired,
     t: PropTypes.func.isRequired,
     dispatchCloseSettings: PropTypes.func.isRequired,
@@ -58,10 +68,42 @@ class Settings extends Component {
     i18n: PropTypes.shape({
       defaultNS: PropTypes.string,
     }).isRequired,
+    lang: PropTypes.string.isRequired,
   };
 
   state = {
-    selectedDate: new Date(),
+    selectedDate: null,
+  };
+
+  componentDidMount() {
+    this.updateLanguage();
+  }
+
+  componentDidUpdate({ settings: prevSettings, lang: prevLang }) {
+    const { settings, activity, lang } = this.props;
+    const { selectedDate } = this.state;
+
+    if (lang !== prevLang) {
+      this.updateLanguage();
+    }
+
+    if (!activity && settings?.initialDateTime) {
+      // update selected date with new fetched value
+      if (
+        !selectedDate ||
+        prevSettings?.initialDateTime !== settings?.initialDateTime
+      ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ selectedDate: settings?.initialDateTime });
+      }
+    }
+  }
+
+  updateLanguage = () => {
+    const { lang } = this.props;
+    // import corresponding moment locale depending on language
+    // eslint-disable-next-line no-unused-expressions
+    import(`moment/locale/${lang}`);
   };
 
   saveSettings = settingsToChange => {
@@ -75,9 +117,11 @@ class Settings extends Component {
     });
   };
 
-  handleDeadlineChanged = value => {
-    this.setState({ selectedDate: value });
-    this.saveSettings({ initialDateTime: new Date(value).toISOString() });
+  handleDateChange = selectedDate => {
+    this.setState({ selectedDate });
+    this.saveSettings({
+      initialDateTime: new Date(selectedDate).toISOString(),
+    });
   };
 
   handleDeadlineMessageChanged = ({ target: { value: deadlineMessage } }) => {
@@ -100,12 +144,8 @@ class Settings extends Component {
   };
 
   renderModalContent() {
-    const { t, settings, activity } = this.props;
+    const { t, settings } = this.props;
     const { headerVisible } = settings;
-
-    if (activity) {
-      return <Loader />;
-    }
 
     const switchControl = (
       <Switch
@@ -129,30 +169,44 @@ class Settings extends Component {
             label={t('Show Header to Students')}
           />
         </Grid>
-        <Grid item>
-          <DatePicker
-            selected={selectedDate}
-            inline
-            fixedHeight
-            minDate={new Date()}
-            showTimeSelect
-            timeFormat="HH:mm"
-            dateFormat="MMMM d, yyyy h:mm aa"
-            id="completionDeadline"
-            label="Select Due Date "
-            onChange={this.handleDeadlineChanged}
-          />
-        </Grid>
-        <Grid item>
+        <Grid item xs={12}>
           <TextField
-            id="timeoutMessage"
-            label="Timeout message"
-            placeholder="Show message when timer runs out"
+            label={t('Timeout Message')}
+            placeholder={t('Show message when timer runs out')}
             variant="outlined"
             fullWidth
-            onBlur={this.handleDeadlineMessageChanged}
-            defaultValue={deadlineMessage}
+            value={deadlineMessage || t(DEFAULT_DEADLINE_MESSAGE)}
+            onChange={this.handleDeadlineMessageChanged}
           />
+        </Grid>
+        <Grid container justify="space-around">
+          <MuiPickersUtilsProvider libInstance={moment} utils={MomentUtils}>
+            <Grid item xs={6}>
+              <KeyboardDatePicker
+                disableToolbar
+                variant="inline"
+                label={t('Date')}
+                format={DEFAULT_DATE_FORMAT}
+                value={selectedDate}
+                onChange={this.handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': t('change date'),
+                }}
+                minDate={Date.now()}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <KeyboardTimePicker
+                ampm={false}
+                label={t('Time')}
+                value={selectedDate}
+                onChange={this.handleDateChange}
+                KeyboardButtonProps={{
+                  'aria-label': t('change time'),
+                }}
+              />
+            </Grid>
+          </MuiPickersUtilsProvider>
         </Grid>
       </Grid>
     );
@@ -181,13 +235,12 @@ class Settings extends Component {
   }
 }
 
-const mapStateToProps = ({ layout, appInstance }) => {
-  return {
-    open: layout.settings.open,
-    settings: appInstance.content.settings,
-    activity: Boolean(appInstance.activity.length),
-  };
-};
+const mapStateToProps = ({ layout, appInstance, context }) => ({
+  open: layout.settings.open,
+  settings: appInstance.content.settings,
+  activity: Boolean(appInstance.activity.length),
+  lang: context.lang || DEFAULT_LANG,
+});
 
 const mapDispatchToProps = {
   dispatchCloseSettings: closeSettings,

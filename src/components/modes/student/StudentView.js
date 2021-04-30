@@ -1,7 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { withTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { makeStyles } from '@material-ui/core/styles';
 import Timer from 'react-compound-timer';
 import { Grid, Typography, Container } from '@material-ui/core';
@@ -23,14 +23,16 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export const StudentView = ({ t, deadlineMessage, initialDateTime }) => {
+export const StudentView = ({ deadlineMessage, initialDateTime }) => {
   const classes = useStyles();
+  const { t } = useTranslation();
   const d = new Date(initialDateTime);
   const dateTimeLocal = d.toString();
   let dateTimeInMille = new Date(dateTimeLocal) - new Date();
   const isElapsed = dateTimeInMille < 0;
-  const pendingDeadlineConfigMsg =
-    'You do not have a deadline to complete this activity.';
+  const pendingDeadlineConfigMsg = t(
+    'You do not have a completion deadline for this lesson.',
+  );
   dateTimeInMille = !isElapsed ? dateTimeInMille : 0;
 
   return (
@@ -83,7 +85,6 @@ export const StudentView = ({ t, deadlineMessage, initialDateTime }) => {
 };
 
 StudentView.propTypes = {
-  t: PropTypes.func.isRequired,
   initialDateTime: PropTypes.number.isRequired,
   deadlineMessage: PropTypes.string.isRequired,
 };
@@ -100,6 +101,4 @@ const mapStateToProps = ({ appInstance, context }) => {
 
 const ConnectedComponent = connect(mapStateToProps)(StudentView);
 
-const TranslatedComponent = withTranslation()(ConnectedComponent);
-
-export default TranslatedComponent;
+export default ConnectedComponent;

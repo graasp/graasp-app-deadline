@@ -1,7 +1,20 @@
 {
   "translations": {
-    "This is the student view. Switch to the teacher view by clicking on the URL below.": "Ceci est la vue des étudiants. Passez à la vue enseignant en cliquant sur l’URL ci-dessous.",
-    "This is the teacher view. Switch to the student view by clicking on the URL below.": "Ceci est la vue de l'enseignant. Passez à la vue des étudiants en cliquant sur l’URL ci-dessous.",
-    "Welcome to the Graasp App Starter Kit": "Bienvenue dans le kit de démarrage de l'application Graasp"
+    "change time": "modifier l'heure",
+    "change date": "modifier la date",
+    "Time": "Heure",
+    "Time is up!": "Le temps est écoulé!",
+    "Date": "Date",
+    "Show message when timer runs out": "Affiche le message quand le compteur s'arrête",
+    "Timeout Message": "Message affiché lorsque le compteur s'arrête",
+    "Settings": "Paramètres",
+    "Delete": "Supprimer",
+    "Cancel": "Annuler",
+    "Show Header to Students": "Montrer l'en-tête pour les étudiants",
+    "By clicking 'Delete', you will be deleting student's time. This action cannot be undone.": "En cliquant sur 'Supprimer', le temps écoulé de l'étudiant sera effacé. Cette action est irréversible.",
+    "Delete Time":"Supprimer l'heure",
+    "Actions": "Actions",
+    "Due Date": "Echéance",
+    "Deadline": "Echéance"
   }
 }

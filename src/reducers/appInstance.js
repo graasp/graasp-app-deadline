@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { DEFAULT_DEADLINE_MESSAGE } from '../constants/constants';
 import {
   GET_APP_INSTANCE_FAILED,
   GET_APP_INSTANCE_SUCCEEDED,
@@ -11,6 +12,7 @@ import { showErrorToast } from '../utils/toasts';
 
 const DEFAULT_SETTINGS = {
   headerVisible: false,
+  deadlineMessage: DEFAULT_DEADLINE_MESSAGE,
 };
 
 const INITIAL_STATE = {
