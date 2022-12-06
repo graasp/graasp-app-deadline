@@ -21,7 +21,7 @@
     "lodash": "4.17.15",
     "moment": "2.29.1",
     "prop-types": "15.7.2",
-    "qs": "6.9.1",
+    "qs": "6.9.7",
     "react": "16.13.1",
     "react-compound-timer": "1.2.0",
     "react-dom": "16.13.1",
